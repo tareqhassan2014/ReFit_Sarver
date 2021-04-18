@@ -83,6 +83,14 @@ client.connect(err => {
             })
     })
 
+    app.post('/booking', (req, res) => {
+        const email = req.body.email;
+        OrderCollection.find({ email: email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
 
     app.post('/addServices', (req, res) => {
         const file = req.files.file;
@@ -115,9 +123,9 @@ client.connect(err => {
     app.patch('/updateOrderStatus', (req, res) => {
         const _id = ObjectID(req.body._id)
         OrderCollection.updateOne({ _id }, { $set: { status: req.body.status } })
-        .then((result, err) => {
-            res.json(result)
-        })
+            .then((result, err) => {
+                res.json(result)
+            })
 
     })
 
