@@ -85,6 +85,7 @@ client.connect(err => {
 
     app.post('/booking', (req, res) => {
         const email = req.body.email;
+        console.log(email);
         OrderCollection.find({ email: email })
             .toArray((err, documents) => {
                 res.send(documents);
@@ -109,6 +110,15 @@ client.connect(err => {
         ServicesCollection.insertOne({ title, description, price, image })
             .then(result => {
                 res.send(result.insertedCount > 0);
+            })
+    })
+
+
+    app.delete('/deleteService/:_id', (req, res) => {
+        console.log(req.params._id);
+        OrderCollection.findOneAndDelete({ _id: ObjectID(req.params._id) })
+            .then((result, err) => {
+                res.json(result)
             })
     })
 
