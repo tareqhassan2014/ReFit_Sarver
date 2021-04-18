@@ -38,13 +38,21 @@ client.connect(err => {
             })
     });
 
-    app.post('/dashboard/review', (req, res) => {
+    app.post('/addReview', (req, res) => {
         const order = req.body;
         ReviewCollection.insertOne(order)
             .then(result => {
                 res.send(result.insertedCount > 0)
             })
     });
+
+    app.post('/dashboard/isAmin', (req, res) => {
+        const email = req.body.email;
+        AdminCollection.find({ email: email })
+            .toArray((err, doctors) => {
+                res.send(doctors.length > 0);
+            })
+    })
 
     app.post('/dashboard/addadmin', (req, res) => {
         const order = req.body;
@@ -56,6 +64,13 @@ client.connect(err => {
 
     app.get('/services', (req, res) => {
         ServicesCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.get('/reviews', (req, res) => {
+        ReviewCollection.find({})
             .toArray((err, documents) => {
                 res.send(documents);
             })
@@ -99,13 +114,11 @@ client.connect(err => {
 
     app.patch('/updateOrderStatus', (req, res) => {
         const _id = ObjectID(req.body._id)
-        OrderCollection.updateOne({ _id: _id },
-            {
-                $set: {
-                    status: req.body.status
-                }
-            }
-        )
+        OrderCollection.updateOne({ _id }, { $set: { status: req.body.status } })
+        .then((result, err) => {
+            res.json(result)
+        })
+
     })
 
 
